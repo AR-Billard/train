@@ -1,11 +1,19 @@
 #!/bin/sh
+
 FILENAME=dataset.zip
 curl -L "$1" > $FILENAME
-unzip $FILENAME
+mkdir -p /workspace/datasets
+unzip -o $FILENAME -d /workspace/datasets
+rm $FILENAME
 
-uvx --from ultralytics yolo train data=data.yaml model=yolo26n-seg.pt epochs=10 lr0=0.01
-uvx --from ultralytics yolo export model=./runs/segment/train/weights/best.pt format=onnx opset=14
+yolo detect train \
+    model=yolo11s.pt \
+    data=/workspace/datasets/data.yaml \
+    epochs=50 \
+    imgsz=640 \
+    batch=16 \
+    device=0
+
+yolo export model=/workspace/runs/detect/train/weights/best.pt format=onnx
 
 uvx copyparty
-
-
