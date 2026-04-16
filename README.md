@@ -1,0 +1,3 @@
+```sh
+docker run -it --rm --gpus=all cuebit <epoch> <url1> <basemodel1> ...
+``
